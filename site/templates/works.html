@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Works{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="tag">Select a work</p>
+  <h1>Programming<br>works</h1>
+  <p class="lead">Choose a program to open it.</p>
+</section>
+<section class="grid">
+  {% set items = [
+    ('/works/uppercase','toUpperCase','Turn any text into capital letters.','Strings'),
+    ('/works/area/circle','Area of a Circle','Enter a radius to get the area.','Math'),
+    ('/works/area/triangle','Area of a Triangle','Enter a base and height to get the area.','Math'),
+    ('/works/linkedlist','Linked List','Add, remove, search and reverse nodes.','Data structure') ] %}
+  {% for href, name, desc, type in items %}
+  <a class="card" href="{{ href }}"><span class="num">0{{ loop.index }}</span><span class="role">{{ type }}</span><h3>{{ name }}</h3><p>{{ desc }}</p></a>
+  {% endfor %}
+</section>
+{% endblock %}

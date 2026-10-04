@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Home{% endblock %} // Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="nav">
+  <a class="logo" href="/"><b class="mark">R</b><span>MY PORTFOLIO</span></a>
+  {% set p = request.path %}
+  <nav>
+    <a href="/" class="{{ 'on' if p == '/' }}">Home</a>
+    <a href="/profile" class="{{ 'on' if p == '/profile' }}">Profile</a>
+    <a href="/works" class="{{ 'on' if p.startswith('/works') }}">Works</a>
+    <a href="/contact" class="{{ 'on' if p == '/contact' }}">Contact</a>
+  </nav>
+  <a class="btn sm" href="/works">Play</a>
+</header>
+<main>{% block content %}{% endblock %}</main>
+<footer>FLASK INTRO 2026 &nbsp;//&nbsp; LAB EXERCISE 4</footer>
+</body>
+</html>
