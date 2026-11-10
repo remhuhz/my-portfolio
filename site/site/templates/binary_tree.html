@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Binary Tree{% endblock %}
+
+{% block content %}
+
+<section class="stack-page">
+
+    <!-- HEADER -->
+    <div class="stack-header">
+        <span class="work-category">DATA STRUCTURE</span>
+
+        <h1>BINARY TREE</h1>
+
+        <p>
+            Explore a binary search tree. Insert numbers, search for a key,
+            delete a node and read the tree in post-order. The drawing
+            updates after every operation.
+        </p>
+    </div>
+
+
+    <!-- EXPLANATION -->
+    <section class="stack-description">
+        <h2>HOW DOES A BINARY TREE WORK?</h2>
+
+        <p>
+            A binary tree is made of nodes, and each node has at most two
+            children: a left child and a right child. This page uses a
+            <strong>binary search tree</strong>, where smaller keys go to
+            the left of a node and larger keys go to the right. Because of
+            that rule, searching can skip half of the remaining tree at
+            every step.
+        </p>
+
+        <h3>Methods Used</h3>
+
+        <ul>
+            <li>
+                <strong>search(root, key):</strong>
+                Walk down from the root, going left or right, until the
+                key is found or the path ends.
+            </li>
+            <li>
+                <strong>post_traversal(start, traversal):</strong>
+                Visit the left subtree, then the right subtree, then the
+                node itself (Left, Right, Root).
+            </li>
+            <li>
+                <strong>delete_node(root, key):</strong>
+                Remove a key and return the new root of that subtree,
+                keeping the search-tree rule true.
+            </li>
+        </ul>
+    </section>
+
+
+    <!-- INTERACTIVE TREE -->
+    <section class="stack-description" id="demo">
+
+        <h2>INTERACTIVE BINARY TREE DEMO</h2>
+
+        <p>
+            Enter a whole number and choose an operation. Try searching
+            for 40, deleting 30 (a node with two children), then run the
+            post-order traversal.
+        </p>
+
+        <form method="POST" action="{{ url_for('binary_tree.binary_tree_page') }}#demo">
+            <label for="tree-value">Enter a whole number</label>
+
+            <input
+                type="number"
+                step="1"
+                id="tree-value"
+                name="value"
+                placeholder="Example: 45"
+                autocomplete="off"
+            >
+
+            <div class="stack-controls">
+                <button type="submit" name="action" value="insert">INSERT +</button>
+                <button type="submit" name="action" value="search" class="secondary">SEARCH</button>
+                <button type="submit" name="action" value="delete" class="secondary">DELETE −</button>
+                <button type="submit" name="action" value="postorder" class="secondary" formnovalidate>
+                    POST-ORDER
+                </button>
+                <button type="submit" name="action" value="reset" class="secondary" formnovalidate>
+                    RESET SAMPLE
+                </button>
+                <button
+                    type="submit"
+                    name="action"
+                    value="clear"
+                    class="secondary"
+                    formnovalidate
+                    onclick="return confirm('Are you sure you want to clear the tree?');"
+                >
+                    CLEAR TREE
+                </button>
+            </div>
+        </form>
+
+
+        {% if msg %}
+        <div class="stack-message" role="status" aria-live="polite">
+            <strong>RESULT:</strong> {{ msg }}
+        </div>
+        {% endif %}
+
+
+        {% if traversal %}
+        <h3>Post-Order Traversal</h3>
+
+        <div class="sort-row">
+            {% for key in traversal %}
+            <span class="sort-chip marked">{{ key }}</span>
+            {% if not loop.last %}<span class="queue-arrow">→</span>{% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        <!-- TREE DRAWING -->
+        <h3>The Tree</h3>
+
+        <div class="tree-wrap">
+            {% if layout.nodes %}
+            <svg
+                class="tree-svg"
+                width="{{ layout.width }}"
+                height="{{ layout.height }}"
+                viewBox="0 0 {{ layout.width }} {{ layout.height }}"
+                role="img"
+                aria-label="Binary tree with {{ size }} nodes"
+            >
+                {% for e in layout.edges %}
+                <line class="tree-edge" x1="{{ e.x1 }}" y1="{{ e.y1 }}" x2="{{ e.x2 }}" y2="{{ e.y2 }}" />
+                {% endfor %}
+
+                {% for n in layout.nodes %}
+                <g class="tree-node{{ ' hit' if n.hit }}">
+                    <circle cx="{{ n.x }}" cy="{{ n.y }}" r="{{ layout.radius }}" />
+                    <text x="{{ n.x }}" y="{{ n.y }}">{{ n.key }}</text>
+                </g>
+                {% endfor %}
+            </svg>
+            {% else %}
+            <div class="stack-empty">
+                <p>The tree is empty.</p>
+                <p>Insert a number to create the root!</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <p>
+            Nodes: <strong>{{ size }}</strong> &nbsp;|&nbsp;
+            Height: <strong>{{ height }}</strong>
+        </p>
+
+        <p class="hint">
+            The red node is the one you just inserted or found. When you
+            delete a node with two children, it takes the value of its
+            in-order successor (the smallest key in its right subtree).
+        </p>
+
+    </section>
+
+
+    <!-- CODE -->
+    <section class="stack-description">
+
+        <h2>THE METHODS IN PYTHON</h2>
+
+        <h3>search</h3>
+        <pre><code>{{ code.search }}</code></pre>
+
+        <h3>post_traversal</h3>
+        <pre><code>{{ code.post_traversal }}</code></pre>
+
+        <h3>delete_node</h3>
+        <pre><code>{{ code.delete_node }}</code></pre>
+
+    </section>
+
+
+    <!-- STEP-BY-STEP EXAMPLE -->
+    <section class="stack-description">
+
+        <h2>THREE CASES OF DELETING A NODE</h2>
+
+        <ol>
+            <li><strong>Leaf (no children):</strong> simply remove it.</li>
+            <li>
+                <strong>One child:</strong> replace the node with its only
+                child.
+            </li>
+            <li>
+                <strong>Two children:</strong> copy the in-order successor's
+                key into the node, then delete the successor from the right
+                subtree.
+            </li>
+        </ol>
+
+        <p>
+            With the sample tree, post-order gives
+            <strong>20, 40, 30, 60, 80, 70, 50</strong>: every node is
+            visited only after both of its children.
+        </p>
+
+    </section>
+
+
+    <!-- BACK BUTTON -->
+    <a href="{{ url_for('works') }}" class="back-link">
+        ← BACK TO WORKS
+    </a>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Works{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+  <p class="tag">Select a work</p>
+  <h1>Programming<br>works</h1>
+  <p class="lead">Choose a program to open it.</p>
+</section>
+
+<section class="grid">
+
+  {# The cards come from the works/ folder (see works/__init__.py). #}
+  {% for work in items %}
+
+  <a class="card" href="{{ work.href }}">
+
+    <span class="num">
+      {% if loop.index < 10 %}0{% endif %}{{ loop.index }}
+    </span>
+
+    <span class="role">{{ work.category }}</span>
+
+    <h3>{{ work.title }}</h3>
+
+    <p>{{ work.desc }}</p>
+
+  </a>
+
+  {% endfor %}
+
+</section>
+
+{% endblock %}
