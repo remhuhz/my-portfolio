@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Area of a Triangle{% endblock %}
+{% block content %}
+<section class="panel narrow">
+  <a class="back" href="/works">All works</a>
+  <p class="tag">Math</p>
+  <h1>Area of a triangle</h1>
+  <form action="/works/area/triangle" method="post">
+    <label for="base">Enter a base</label>
+    <input type="number" step="any" min="0" id="base" name="base" required>
+    <label for="height">Enter a height</label>
+    <input type="number" step="any" min="0" id="height" name="height" required>
+    <button class="btn" type="submit">Compute</button>
+  </form>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  {% if result is not none %}<div class="result"><span>Area of the triangle</span><b>{{ result }}</b></div>{% endif %}
+</section>
+{% endblock %}

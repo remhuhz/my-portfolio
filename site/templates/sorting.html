@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}Sorting Algorithm{% endblock %}
+
+{% block content %}
+
+<section class="stack-page">
+
+    <!-- HEADER -->
+    <div class="stack-header">
+        <span class="work-category">DATA STRUCTURE</span>
+
+        <h1>SORTING ALGORITHM</h1>
+
+        <p>
+            Explore five classic ways to put a list of numbers in order:
+            Bubble, Selection, Insertion, Merge and Quick sort.
+            Run each one and watch how the list changes step by step.
+        </p>
+    </div>
+
+
+    <!-- EXPLANATION -->
+    <section class="stack-description">
+        <h2>WHAT IS SORTING?</h2>
+
+        <p>
+            Sorting rearranges the items of a list into a given order,
+            here from the smallest number to the largest. Different
+            algorithms reach the same result with different amounts of
+            work, which is why we count <strong>comparisons</strong> and
+            <strong>moves</strong> to compare them.
+        </p>
+
+        <h3>The Five Algorithms</h3>
+
+        <ul>
+            {% for key, info in algorithms.items() %}
+            <li>
+                <strong>{{ info.name }}:</strong>
+                {{ info.idea }}
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+
+    <!-- INTERACTIVE DEMO -->
+    <section class="stack-description" id="demo">
+
+        <h2>INTERACTIVE SORTING DEMO</h2>
+
+        <p>
+            Type up to {{ max_items }} numbers separated by commas or
+            spaces, then choose an algorithm. Decimals and negative
+            numbers work too.
+        </p>
+
+        <form method="POST" action="{{ url_for('sorting.sorting_page') }}#demo">
+            <label for="sort-numbers">Enter numbers</label>
+
+            <input
+                type="text"
+                id="sort-numbers"
+                name="numbers"
+                value="{{ raw }}"
+                placeholder="Example: 64, 25, 12, 22, 11"
+                maxlength="200"
+                autocomplete="off"
+                required
+            >
+
+            <div class="stack-controls">
+                {% for key, info in algorithms.items() %}
+                <button
+                    type="submit"
+                    name="action"
+                    value="{{ key }}"
+                    {% if selected and selected != key %}class="secondary"{% endif %}
+                >
+                    {{ info.name }}
+                </button>
+                {% endfor %}
+
+                <button type="submit" name="action" value="compare" class="secondary">
+                    COMPARE ALL
+                </button>
+            </div>
+        </form>
+
+
+        {% if error %}
+        <div class="stack-message" role="alert">
+            <strong>ERROR:</strong> {{ error }}
+        </div>
+        {% endif %}
+
+
+        <!-- ONE ALGORITHM RESULT -->
+        {% if result and not comparison %}
+
+        <div class="stack-message" role="status" aria-live="polite">
+            <strong>{{ result.name | upper }}:</strong>
+            the list is now sorted from smallest to largest.
+        </div>
+
+        <h3>Sorted Result</h3>
+
+        <div class="sort-row">
+            {% for value in result.sorted %}
+            <span class="sort-chip marked">{{ value }}</span>
+            {% endfor %}
+        </div>
+
+        <div class="sort-stats">
+            <div>
+                <span>Comparisons</span>
+                <b>{{ result.comparisons }}</b>
+            </div>
+            <div>
+                <span>{{ result.moves_label }}</span>
+                <b>{{ result.moves }}</b>
+            </div>
+            <div>
+                <span>Items</span>
+                <b>{{ result.sorted | length }}</b>
+            </div>
+        </div>
+
+        <h3>Step By Step</h3>
+
+        <p class="hint">Highlighted values are in their sorted position or were just merged.</p>
+
+        <ol class="sort-steps">
+            {% for step in result.steps %}
+            <li>
+                <span class="sort-label">{{ step.label }}</span>
+
+                <div class="sort-row">
+                    {% for value in step.data %}
+                    <span class="sort-chip{{ ' marked' if loop.index0 in step.marked }}">{{ value }}</span>
+                    {% endfor %}
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+
+        {% endif %}
+
+
+        <!-- COMPARE ALL RESULT -->
+        {% if comparison %}
+
+        <div class="stack-message" role="status" aria-live="polite">
+            <strong>COMPARE ALL:</strong>
+            all five algorithms sorted the same list.
+        </div>
+
+        <h3>Sorted Result</h3>
+
+        <div class="sort-row">
+            {% for value in result.sorted %}
+            <span class="sort-chip marked">{{ value }}</span>
+            {% endfor %}
+        </div>
+
+        <h3>Work Done By Each Algorithm</h3>
+
+        <div class="sort-table-wrap">
+            <table class="sort-table">
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Comparisons</th>
+                        <th>Swaps / shifts / merged items</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in comparison %}
+                    <tr>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.comparisons }}</td>
+                        <td>{{ row.moves }} <small>({{ row.moves_label | lower }})</small></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p class="hint">
+            Try a list that is already sorted, then a reversed one, and
+            compare the numbers again.
+        </p>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ALGORITHM REFERENCE -->
+    <section class="stack-description">
+
+        <h2>ALGORITHM REFERENCE</h2>
+
+        <div class="tabs" role="tablist">
+            {% for key, info in algorithms.items() %}
+            <button
+                type="button"
+                role="tab"
+                data-tab="{{ key }}"
+                class="{{ 'on' if (selected == key) or (not selected and loop.first) }}"
+            >
+                {{ info.name }}
+            </button>
+            {% endfor %}
+        </div>
+
+        {% for key, info in algorithms.items() %}
+        <div
+            id="tab-{{ key }}"
+            class="sort-panel"
+            role="tabpanel"
+            {% if not ((selected == key) or (not selected and loop.first)) %}hidden{% endif %}
+        >
+            <p>{{ info.idea }}</p>
+
+            <ul class="sort-facts">
+                <li><strong>Best case:</strong> {{ info.best }}</li>
+                <li><strong>Average case:</strong> {{ info.average }}</li>
+                <li><strong>Worst case:</strong> {{ info.worst }}</li>
+                <li><strong>Extra space:</strong> {{ info.space }}</li>
+                <li><strong>Stable:</strong> {{ info.stable }}</li>
+            </ul>
+
+            <pre><code>{{ info.code }}</code></pre>
+        </div>
+        {% endfor %}
+
+    </section>
+
+
+    <!-- BACK BUTTON -->
+    <a href="{{ url_for('works') }}" class="back-link">
+        ← BACK TO WORKS
+    </a>
+
+</section>
+
+<script>
+    // Switch between the algorithm tabs (no page reload).
+    document.querySelectorAll('.tabs button[data-tab]').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            document.querySelectorAll('.tabs button[data-tab]').forEach(function (t) {
+                t.classList.toggle('on', t === tab);
+            });
+
+            document.querySelectorAll('.sort-panel').forEach(function (panel) {
+                panel.hidden = panel.id !== 'tab-' + tab.dataset.tab;
+            });
+        });
+    });
+</script>
+
+{% endblock %}

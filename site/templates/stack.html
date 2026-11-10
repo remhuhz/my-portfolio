@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Stack Algorithm{% endblock %}
+
+{% block content %}
+
+<section class="stack-page">
+
+    <!-- HEADER -->
+    <div class="stack-header">
+        <span class="work-category">
+            LAB EXERCISE #5
+        </span>
+
+        <h1>STACK ALGORITHM</h1>
+
+        <p>
+            Explore how a stack works using the
+            Last In, First Out (LIFO) principle.
+            Try the operations below and watch the stack change.
+        </p>
+    </div>
+
+
+    <!-- STACK EXPLANATION -->
+    <section class="stack-description">
+        <h2>HOW DOES A STACK WORK?</h2>
+
+        <p>
+            A stack is a linear data structure where the last
+            element added is the first element removed.
+            Imagine a pile of plates: you place a plate on top
+            and take the top plate first.
+        </p>
+
+        <h3>Four Main Operations</h3>
+
+        <ul>
+            <li>
+                <strong>Push:</strong>
+                Add a new element to the top of the stack.
+            </li>
+            <li>
+                <strong>Pop:</strong>
+                Remove the element at the top of the stack.
+            </li>
+            <li>
+                <strong>Peek:</strong>
+                View the top element without removing it.
+            </li>
+            <li>
+                <strong>Display:</strong>
+                View all elements from top to bottom.
+            </li>
+        </ul>
+    </section>
+
+
+    <!-- INTERACTIVE STACK -->
+    <section class="stack-description">
+
+        <h2>INTERACTIVE STACK DEMO</h2>
+
+        <p>
+            Enter a value and click PUSH to add it.
+            Try pushing 10, 20, and 30 in that order.
+            Notice which value appears at the top!
+        </p>
+
+
+        <!-- PUSH FORM -->
+        <form method="POST" action="{{ url_for('stack.stack_page') }}">
+            <label for="stack-value">Enter a value</label>
+
+            <input
+                type="text"
+                id="stack-value"
+                name="value"
+                placeholder="Example: 10"
+                maxlength="50"
+                required
+            >
+
+            <button class="btn" type="submit" name="action" value="push">
+                PUSH +
+            </button>
+        </form>
+
+
+        <!-- STACK MESSAGE -->
+        {% if msg %}
+        <div class="stack-message" role="status" aria-live="polite">
+            <strong>RESULT:</strong> {{ msg }}
+        </div>
+        {% endif %}
+
+
+        <!-- STACK DISPLAY -->
+        <div class="stack-display">
+
+            <span class="stack-top-label">
+                ↓ TOP OF STACK
+            </span>
+
+            {% if elements %}
+
+                {% for element in elements %}
+
+                <div class="stack-item">
+                    {{ element }}
+
+                    {% if loop.first %}
+                    <span style="color: #bd3944; font-size: 14px;">
+                        &nbsp; ← TOP
+                    </span>
+                    {% endif %}
+                </div>
+
+                {% endfor %}
+
+                <p>
+                    Total elements: {{ elements|length }}
+                </p>
+
+            {% else %}
+
+                <div class="stack-empty">
+                    <p>Your stack is empty.</p>
+                    <p>Push a value to get started!</p>
+                </div>
+
+            {% endif %}
+
+            <span class="stack-top-label">
+                BOTTOM OF STACK
+            </span>
+
+        </div>
+
+
+        <!-- STACK OPERATION BUTTONS -->
+        <div class="stack-controls">
+
+            <!-- POP -->
+            <form method="POST" action="{{ url_for('stack.stack_page') }}">
+                <button type="submit" name="action" value="pop">
+                    POP −
+                </button>
+            </form>
+
+            <!-- PEEK -->
+            <form method="POST" action="{{ url_for('stack.stack_page') }}">
+                <button
+                    type="submit"
+                    name="action"
+                    value="peek"
+                    class="secondary"
+                >
+                    PEEK
+                </button>
+            </form>
+
+            <!-- CLEAR -->
+            <form
+                method="POST"
+                action="{{ url_for('stack.stack_page') }}"
+                onsubmit="return confirm('Are you sure you want to clear the stack?');"
+            >
+                <button
+                    type="submit"
+                    name="action"
+                    value="clear"
+                    class="secondary"
+                >
+                    CLEAR STACK
+                </button>
+            </form>
+
+        </div>
+
+        <p class="hint">
+            Note: Each operation updates the stack.
+            PEEK does not remove an element.
+            POP removes only the top element.
+        </p>
+
+    </section>
+
+
+    <!-- STEP-BY-STEP EXAMPLE -->
+    <section class="stack-description">
+
+        <h2>STEP-BY-STEP EXAMPLE</h2>
+
+        <p>Suppose we perform these operations in order:</p>
+
+        <ol>
+            <li>Push 10 — the stack contains 10.</li>
+            <li>Push 20 — 20 becomes the new top.</li>
+            <li>Push 30 — 30 becomes the new top.</li>
+            <li>Peek — returns 30 without changing the stack.</li>
+            <li>Pop — removes 30, so 20 becomes the new top.</li>
+        </ol>
+
+        <h3>Expected Stack After Three Pushes</h3>
+
+        <div class="stack-display">
+            <span class="stack-top-label">TOP</span>
+
+            <div class="stack-item">30</div>
+            <div class="stack-item">20</div>
+            <div class="stack-item">10</div>
+
+            <span class="stack-top-label">BOTTOM</span>
+        </div>
+
+        <p>
+            This demonstrates LIFO:
+            <strong>30 is removed first because it was added last.</strong>
+        </p>
+
+    </section>
+
+
+    <!-- BACK BUTTON -->
+    <a href="{{ url_for('works') }}" class="back-link">
+        ← BACK TO WORKS
+    </a>
+
+</section>
+
+{% endblock %}

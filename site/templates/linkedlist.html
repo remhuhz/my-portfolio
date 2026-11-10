@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Linked List{% endblock %}
+{% block content %}
+<section class="panel">
+  <a class="back" href="/works">All works</a>
+  <p class="tag">Data structure</p>
+  <h1>Linked list</h1>
+  <div class="chain">
+    {% for n in nodes %}
+      {% if loop.first %}<em>HEAD</em>{% endif %}
+      <span class="node">{{ n }}</span><i></i>
+    {% else %}<p class="hint">The list is empty. Add a node.</p>{% endfor %}
+    {% if nodes %}<em>NULL</em>{% endif %}
+  </div>
+  <form action="/works/linkedlist" method="post">
+    <label for="value">Value</label>
+    <input type="text" id="value" name="value" autocomplete="off">
+    <div class="row">
+      <button class="btn" name="action" value="head">Add to head</button>
+      <button class="btn" name="action" value="tail">Add to tail</button>
+      <button class="btn ghost" name="action" value="search">Search</button>
+      <button class="btn ghost" name="action" value="delete">Delete</button>
+      <button class="btn ghost" name="action" value="reverse">Reverse</button>
+    </div>
+  </form>
+  {% if msg %}<div class="result"><span>Status</span><b class="small">{{ msg }}</b></div>{% endif %}
+</section>
+{% endblock %}
